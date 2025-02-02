@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Search Results - MAVIEW</title>
+    <link href="style.css" rel="stylesheet">  
+    <link rel="icon" href="mblogo.png" type="image/png">
+
+
+</head>
+<body style="background-color: #121212; color: white; font-family: Arial, sans-serif; margin: 0; padding: 0;">
+
+    <header class="navbar">
+        <div class="logo-details">
+            <img src="mwlogo.png" alt="MAVIEW Logo" style="height: 40px; width: auto; margin-right: 10px;">
+            <div class="logo_name">MAVIEW</div>
+        </div>
+        <ul class="nav-list">
+          <li>
+            <div class="search-container">
+              <input id="searchInput" type="text" placeholder="Search..." oninput="showSearchResults()">
+              <div id="searchDropdown" class="dropdown-content"></div>
+            </div>
+            
+          </li>
+          <li><a href="index.html"><i class='bx bx-home'></i> Home</a></li>
+         
+        </ul>
+        
+      </header>
+
+<main style="padding: 20px; text-align: center;">
+    <h2 style="color: white;">Search Results</h2>
+    <div id="searchResults" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px;"></div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get("query");
+
+        if (query) {
+            fetchSearchResults(query);
+        }
+    });
+
+    async function fetchSearchResults(query) {
+        const apiKey = '68e094699525b18a70bab2f86b1fa706';
+        const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`;
+
+        try {
+            const response = await fetch(searchUrl);
+            const data = await response.json();
+
+            const resultsContainer = document.getElementById("searchResults");
+            resultsContainer.innerHTML = `<p style="color: white; text-align: center; width: 100%;">Results for: <strong>${query}</strong></p>`;
+
+            if (data.results.length === 0) {
+                resultsContainer.innerHTML += `<p style="color: white; text-align: center; width: 100%;">No results found.</p>`;
+            } else {
+                data.results.forEach(movie => {
+                    const movieElement = document.createElement("div");
+                    movieElement.style.width = "200px";
+                    movieElement.style.textAlign = "center";
+                    movieElement.style.padding = "10px";
+                    movieElement.style.backgroundColor = "#1a1a1a";
+                    movieElement.style.borderRadius = "10px";
+
+                    const movieImage = document.createElement("img");
+                    movieImage.src = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : "https://via.placeholder.com/200x300?text=No+Image";
+                    movieImage.alt = movie.title;
+                    movieImage.style.width = "100%";
+                    movieImage.style.height = "300px";
+                    movieImage.style.objectFit = "cover";
+                    movieImage.style.borderRadius = "10px";
+                    movieImage.style.cursor = "pointer";
+                    movieImage.style.transition = "transform 0.2s";
+
+                    movieImage.addEventListener("mouseenter", () => {
+                        movieImage.style.transform = "scale(1.1)";
+                    });
+
+                    movieImage.addEventListener("mouseleave", () => {
+                        movieImage.style.transform = "scale(1)";
+                    });
+
+                    movieImage.addEventListener("click", () => {
+                        window.location.href = `movie_details/movie_details.html?id=${movie.id}`;
+                    });
+
+                    const movieTitle = document.createElement("p");
+                    movieTitle.textContent = movie.title;
+                    movieTitle.style.color = "white";
+                    movieTitle.style.marginTop = "10px";
+                    movieTitle.style.fontSize = "14px";
+                    movieTitle.style.fontWeight = "bold";
+
+                    movieElement.appendChild(movieImage);
+                    movieElement.appendChild(movieTitle);
+                    resultsContainer.appendChild(movieElement);
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching search results:", error);
+        }
+    }
+</script>
+
+</body>
+</html>
