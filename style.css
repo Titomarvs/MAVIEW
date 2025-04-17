@@ -770,3 +770,44 @@ div.scroll-container img {
   .card-image {
     transition: transform 0.3s ease-in-out;
 }
+
+
+
+
+
+
+
+
+
+
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px;
+}
+
+.movie-item {
+  display: inline-block;
+  text-align: center;
+  margin: 10px;
+}
+
+.movie-item img {
+  width: 150px;
+  height: auto;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.movie-item img:hover {
+  transform: scale(1.1);
+}
+
+.movie-item p {
+  color: white;
+  font-size: 14px;
+  margin-top: 5px;
+}
